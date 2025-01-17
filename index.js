@@ -1,11 +1,31 @@
 const Confluence = require("confluence-api");
-const core = require("@actions/core");
+// const core = require("@actions/core");
 const parser = require("node-html-parser")
 const path = require('path')
 
 const filesStructure = require("./utils/files");
 const SyncConfluence = require("./utils/confluence");
 const markdownToHtml = require("./utils/markdownToHtml");
+
+function getArgs() {
+  const args = process.argv.slice(2);
+  let params = {};
+
+  args.forEach(a => {
+    const nameValue = a.split("=");
+    params[ nameValue[0].slice(2) ] = nameValue[1];
+  });
+
+  return params;
+}
+
+const CLI_PARAMS = getArgs()
+
+console.log(CLI_PARAMS)
+
+const core = {
+  getInput: (name, args) => CLI_PARAMS[name]
+}
 
 const root = "./" + core.getInput("folder", { required: true }) + "/";
 const spaceKey = core.getInput("space-key", { required: true });
